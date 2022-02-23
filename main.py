@@ -20,6 +20,14 @@ slash_dict = {
     OperatingSystems.MAC: "/"
 }
 
+def yesNoConfirmer():
+    print("Enter ([y]es/[n]o)", end = "")
+    ans = input(": ").lower()
+    while ans.find("y") == ans.find("n"):
+        print("invalid input")
+        print("Enter ([y]es/[n]o)", end = "")
+        ans = input(": ").lower()
+    return ans.find("y") != -1
 
 
 def fileloader(filepath, parameter = None):
@@ -60,7 +68,7 @@ def parseSeriesOfSpacesToNewLine(somestring):
         if nxt_nonspace - space_pos <= 100:
            # print("skipping! spaces were not a series going 100 spaces ahead")
             space_pos = somestring.find(" ", nxt_nonspace)
-            new_data += somestring[nxt_nonspace:space_pos]
+            new_data += somestring[nxt_nonspace-1:space_pos]
             nxt_nonspace = findNextNonSpace(somestring, space_pos)
         else:
             new_data+="\n"
@@ -136,8 +144,12 @@ else:
         print("\n\nRESULT:\n\n"+data)
 
         if output_file_name == "":
-            print("no output file given using hw.txt as default")
-            output_file_name = "hw.txt"
+            print("no output file given, overwrite file?")
+            if yesNoConfirmer():
+                output_file_name = filename
+            else:
+                print("will use hw.txt as output...")
+                output_file_name = "output.txt"
 
         file_to_write = fileloader(folderpath+slash_char+output_file_name, "w")
         if file_to_write != None:
